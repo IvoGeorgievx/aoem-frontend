@@ -6,22 +6,20 @@ import {
 	CardHeader,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-	useGoogleLoginMutation,
-	useLoginMutation,
-} from "@/services/auth/auth.mutations";
-import { useState } from "react";
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { env } from "@/config/env";
+import { useLoginMutation } from "@/services/auth/auth.mutations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const schema = z.object({
 	email: z.email(),
@@ -40,10 +38,14 @@ const Login = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<LoginFormValues>({ resolver: zodResolver(schema) });
+	} = useForm<LoginFormValues>({
+		resolver: zodResolver(schema),
+		mode: "onChange",
+	});
 
-	const { mutate, isSuccess, isError } = useLoginMutation();
-	const { mutate: googleMutate } = useGoogleLoginMutation();
+	const { mutate, isError } = useLoginMutation();
+
+	/// TODO: After sucessful login to use useGetUser query
 
 	const onSubmit = (data: LoginFormValues) => {
 		mutate(data);
@@ -54,7 +56,7 @@ const Login = () => {
 	};
 
 	const handleGoogleLogin = () => {
-		window.location.href = "http://localhost:3000/auth/google-sign-in";
+		window.location.href = `${env.API_URL}/auth/google-sign-in`;
 	};
 
 	return (
@@ -83,6 +85,7 @@ const Login = () => {
 										id="password"
 										type={showPassword ? "text" : "password"}
 										placeholder="Enter password"
+										{...register("password")}
 									/>
 									<InputGroupAddon
 										align="inline-end"
