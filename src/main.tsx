@@ -6,15 +6,18 @@ import "./index.css";
 import { queryClient } from "./lib/queryClient.ts";
 import { ThemeProvider } from "./providers/theme/theme-provider.tsx";
 import { BrowserRouter } from "react-router";
+import { UserProvider } from "./providers/user/user-provider.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<ThemeProvider storageKey="vite-ui-theme">
-			<BrowserRouter>
-				<QueryClientProvider client={queryClient}>
-					<App />
-				</QueryClientProvider>
-			</BrowserRouter>
+			<UserProvider>
+				<BrowserRouter>
+					<QueryClientProvider client={queryClient}>
+						<App />
+					</QueryClientProvider>
+				</BrowserRouter>
+			</UserProvider>
 		</ThemeProvider>
 	</StrictMode>,
 );

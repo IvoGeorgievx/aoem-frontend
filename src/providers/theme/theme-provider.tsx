@@ -14,13 +14,12 @@ export function ThemeProvider({
 	storageKey = "vite-ui-theme",
 }: ThemeProviderProps) {
 	const [theme, setTheme] = useState<Theme>(
-		() => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+		() => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
 	);
 
 	useEffect(() => {
 		const root = window.document.documentElement;
 		root.classList.remove("dark", "light");
-
 		root.classList.add(theme);
 	}, [theme]);
 

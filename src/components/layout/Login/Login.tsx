@@ -14,10 +14,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { env } from "@/config/env";
+import { useUser } from "@/providers/user/use-user";
 import { useLoginMutation } from "@/services/auth/auth.mutations";
+import { useGetUser } from "@/services/user/user.queries";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -44,8 +46,14 @@ const Login = () => {
 	});
 
 	const { mutate, isError } = useLoginMutation();
+	const { setUser } = useUser();
+	const { data: userData, isSuccess: successUserQuery } = useGetUser();
 
-	/// TODO: After sucessful login to use useGetUser query
+	useEffect(() => {
+		if (successUserQuery && userData) {
+			setUser(userData);
+		}
+	}, [successUserQuery, userData, setUser]);
 
 	const onSubmit = (data: LoginFormValues) => {
 		mutate(data);
